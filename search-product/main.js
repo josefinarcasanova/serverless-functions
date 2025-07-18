@@ -65,7 +65,7 @@ async function main(args) {
         return {
             statusCode: 400,
             headers: { 'Content-Type': 'application/json' },
-            body: { error: 'No valid search parameters provided' },
+            body: { error: `Invalid search parameters provided. Provided ${JSON.stringify(filters)}` },
         };
     }
 
@@ -95,10 +95,9 @@ async function main(args) {
 
 module.exports.main = main;
 
-/* input = {
-  "inputs": "{ \"name\": \"lloyd\",\"ratings\" : 4.2 }"
+input = {
+  "inputs": "{}"
 }
 //input = { 'name' : 'lloyd'}
 async function test (){console.log(await main(input))};
 test()
- */
