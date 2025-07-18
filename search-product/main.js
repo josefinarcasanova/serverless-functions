@@ -1,3 +1,4 @@
+
 async function main(args) {
     const { Pool } = require('pg');
     require('dotenv').config();
@@ -9,9 +10,26 @@ async function main(args) {
         database: process.env.PGDBNAME,
         port: process.env.PGPORT,
         ssl: {
-            rejectUnauthorized: false
+            rejectUnauthorized: false // Accept self-signed certs (common in cloud DBs)
         }
     });
+
+    let filters = {};
+    try {
+        if (typeof args.inputs === 'string') {
+            filters = JSON.parse(args.inputs);
+        } else if (typeof args.inputs === 'object') {
+            filters = args.inputs;
+        } else {
+            filters = args;
+        }
+    } catch (e) {
+        return {
+            statusCode: 400,
+            headers: { 'Content-Type': 'application/json' },
+            body: { error: 'Invalid JSON in inputs field' },
+        };
+    }
 
     const allowedFields = [
         'name',
@@ -22,40 +40,22 @@ async function main(args) {
         'discount_price',
         'actual_price',
     ];
-
-    const textFields = ['name', 'main_category', 'sub_category'];
-    const numericFields = ['ratings', 'no_of_ratings', 'discount_price', 'actual_price'];
     const table_name = "jcasanova_playground.amazon_products";
 
     const conditions = [];
     const values = [];
-    let index = 1;
 
+    let index = 1;
     for (const key of allowedFields) {
-        const value = args[key];
-        if (value !== undefined) {
-            if (textFields.includes(key)) {
-                conditions.push(`${key} ILIKE $${index}`);
-                values.push(`%${value}%`);
-                index++;
-            } else if (numericFields.includes(key)) {
-                if (typeof value === 'object' && (value.min !== undefined || value.max !== undefined)) {
-                    if (value.min !== undefined) {
-                        conditions.push(`${key} >= $${index}`);
-                        values.push(value.min);
-                        index++;
-                    }
-                    if (value.max !== undefined) {
-                        conditions.push(`${key} <= $${index}`);
-                        values.push(value.max);
-                        index++;
-                    }
-                } else {
-                    conditions.push(`${key} = $${index}`);
-                    values.push(value);
-                    index++;
-                }
+        if (filters[key]) {
+            if (typeof filters[key] === 'string') {
+                conditions.push(`LOWER(${key}) LIKE LOWER($${index})`);
+                values.push(`%${filters[key]}%`);
+            } else {
+                conditions.push(`${key} = $${index}`);
+                values.push(filters[key]);
             }
+            index++;
         }
     }
 
@@ -63,7 +63,7 @@ async function main(args) {
         return {
             statusCode: 400,
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ error: 'No valid search parameters provided' }),
+            body: { error: 'No valid search parameters provided' },
         };
     }
 
@@ -93,6 +93,10 @@ async function main(args) {
 
 module.exports.main = main;
 
-main({
-    "name": "lloyd"
-})
+/* input = {
+  "inputs": "{ \"name\": \"lloyd\" }"
+}
+input = { 'name' : 'lloyd'}
+async function test (){console.log(await main(input))};
+test()
+ */
