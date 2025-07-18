@@ -75,7 +75,7 @@ async function main(args) {
 
     try {
         const result = await pool.query(query, values);
-        //console.log(result.rows);
+        console.log(result.rows);
         return {
             statusCode: 200,
             headers: { 'Content-Type': 'application/json' },
@@ -92,3 +92,7 @@ async function main(args) {
 }
 
 module.exports.main = main;
+
+main({
+    "name": "lloyd"
+})
