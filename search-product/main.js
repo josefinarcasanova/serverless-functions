@@ -10,7 +10,7 @@ async function main(args) {
         database: process.env.PGDBNAME,
         port: process.env.PGPORT,
         ssl: {
-            rejectUnauthorized: false // Accept self-signed certs (common in cloud DBs)
+            rejectUnauthorized: false
         }
     });
 
@@ -58,6 +58,8 @@ async function main(args) {
             index++;
         }
     }
+    console.log("filters: ",filters)
+    console.log("conditions:" , conditions)
 
     if (conditions.length === 0) {
         return {
@@ -93,10 +95,9 @@ async function main(args) {
 
 module.exports.main = main;
 
-/* input = {
-  "inputs": "{ \"name\": \"lloyd\" }"
+input = {
+  "inputs": "{ \"name\": \"lloyd\",\"ratings\" : 4.2 }"
 }
-input = { 'name' : 'lloyd'}
+//input = { 'name' : 'lloyd'}
 async function test (){console.log(await main(input))};
 test()
- */
