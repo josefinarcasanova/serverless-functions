@@ -69,4 +69,4 @@ paths:
           description: Internal server error
       summary: Search for product
 servers:
-- url: https://search-product.1xx91b9cgn1g.us-south.codeengine.appdomain.cloud
+- url: https://search-product-v2.1xx91b9cgn1g.us-south.codeengine.appdomain.cloud/
