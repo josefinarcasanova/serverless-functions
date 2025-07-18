@@ -95,9 +95,9 @@ async function main(args) {
 
 module.exports.main = main;
 
-input = {
+/* input = {
   "inputs": "{}"
 }
 //input = { 'name' : 'lloyd'}
 async function test (){console.log(await main(input))};
-test()
+test() */
