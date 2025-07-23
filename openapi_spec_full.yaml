@@ -1,0 +1,139 @@
+info:
+  description: Serverless API to search for products employing a diverse amount of filters.
+  title: Product Search API
+  version: 1.0.2
+openapi: 3.0.3
+paths:
+  /product/search:
+    post:
+      description: Returns a list of products matching the provided search criteria.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProductInput'
+      responses:
+        '200':
+          description: A list of matching products
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Product'
+        '400':
+          content:
+            application/json:
+              schema:
+                properties:
+                  error:
+                    type: string
+                type: object
+          description: Invalid input parameters
+        '500':
+          content:
+            application/json:
+              schema:
+                properties:
+                  error:
+                    type: string
+                type: object
+          description: Internal server error
+      summary: Search for product
+  /product/categories:
+    post:
+      summary: List product categories and sub-categories. 
+      description: Returns a list of main categories or sub-categories depending on the input. If input is empty, a list of main_categories is returned. If a main_category is sent, a list of its corresponding sub-categories are returned. If a sub-category is sent, a list of products belonging to that sub-categories is returned.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CategoryInput'
+      responses:
+        '200':
+          description: A list of categories
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+        '400':
+          description: Invalid input parameters
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+servers:
+- url: https://product-categories.1xx91b9cgn1g.us-south.codeengine.appdomain.cloud/
+components:
+  schemas:
+    CategoryInput:
+      type: object
+      properties:
+        main_category:
+          type: string
+          description: 'Category to which the product belongs. Example: appliances.'
+        sub_category:
+          type: string
+          description: 'sub-category to which the product belongs. Example: "air conditioners", which is withing the "appliances" category.'
+    ProductInput:
+      type: object
+      properties: &id001
+        name:
+          type: string
+          description: Product name.
+        main_category:
+          type: string
+          description: 'Category to which the product belongs. Example: appliances.'
+        sub_category:
+          type: string
+          description: 'Sub-category to which the product belongs. Example: ''Air
+            Conditioners''.'
+        actual_price:
+          type: number
+          description: Current product price, in US dollars.
+        discount_price:
+          type: number
+          description: Product price at a discount, in US dollars.
+        image:
+          type: string
+          format: uri
+          description: URL of an image depicting the product, in jpg or png format.
+        link:
+          type: string
+          format: uri
+          description: URL to purchase the product.
+        ratings:
+          type: number
+          description: 'Product rating, decimal number from 1 to 5. Example: 4.2.'
+        no_of_ratings:
+          type: integer
+          description: Amount of people that left ratings.
+    Product:
+      type: object
+      properties: *id001
+      required:
+      - name
+      - main_category
+      - sub_category
+      - actual_price
+      - discount_price
+      - image
+      - link
+      - ratings
+      - no_of_ratings

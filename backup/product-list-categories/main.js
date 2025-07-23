@@ -2,12 +2,6 @@ async function main(args) {
     const { Pool } = require('pg');
     require('dotenv').config();
 
-    return {
-            statusCode: 200,
-            headers: { 'Content-Type': 'application/json' },
-            body: args
-        };
-
     const pool = new Pool({
         host: process.env.PGHOST,
         user: process.env.PGUSER,

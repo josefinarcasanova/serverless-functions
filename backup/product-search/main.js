@@ -81,7 +81,7 @@ async function main(args) {
         return {
             statusCode: 200,
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(result.rows),
+            body: result.rows //JSON.stringify(result.rows),
         };
     } catch (err) {
         console.error('Database error:', err);
