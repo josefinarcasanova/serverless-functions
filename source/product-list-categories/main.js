@@ -40,26 +40,42 @@ async function main(args) {
 
     try {
         let query = "";
+        let keys = [];
         let values = [];
 
         if (Object.keys(filters).length === 0) {
             // Return distinct main categories
             query = `SELECT DISTINCT main_category FROM ${table_name} WHERE main_category IS NOT NULL ORDER BY main_category`;
-        } else if (filters.main_category) {
+        } else if ((Object.keys(filters).length === 1) & (filters.main_category)) {
             // Return distinct sub-categories for a given main category
             query = `SELECT DISTINCT sub_category FROM ${table_name} WHERE LOWER(main_category) = LOWER($1) AND sub_category IS NOT NULL ORDER BY sub_category`;
             values = [filters.main_category];
-        } else if (filters.sub_category) {
+        } else if ((Object.keys(filters).length === 1) & filters.sub_category) {
             // Return distinct sub-categories for a given main category
             query = `SELECT * FROM ${table_name} WHERE LOWER(sub_category) = LOWER($1) AND sub_category IS NOT NULL`;
             values = [filters.sub_category];
         } else {
-            return {
+            /* return {
                 statusCode: 400,
                 headers: { 'Content-Type': 'application/json' },
                 body: { error: 'Invalid input. Provide either an empty object or { main_category: "{SOME_CATEGORY}" }' },
-            };
+            }; */
+            query = `SELECT * FROM ${table_name}`;
+            values = [];
+            let conditions = [];
+
+            const keys = Object.keys(filters);
+
+            if (keys.length > 0) {
+                keys.forEach((key, index) => {
+                    conditions.push(`LOWER(${key}) = LOWER($${index + 1})`);
+                    values.push(filters[key]);
+                });
+
+                query += ` WHERE ${conditions.join(' AND ')}`;
+            }
         }
+        console.log(query);
 
         const result = await pool.query(query, values);
         const key = Object.keys(result.rows[0] || {})[0];
@@ -82,8 +98,9 @@ async function main(args) {
 
 module.exports.main = main;
 
-/* input = '{ "main_category": "car & motorbike"}'
+//input = '{ "main_category": "car & motorbike"}'
 //input = {}
-input = {"sub_category": "Air Conditioners"}
+//input = {"sub_category": "Air Conditioners"}
+/* input = { "main_category": "appliances", "sub_category": "Air Conditioners"}
 async function test() { console.log(await main(input)) };
 test() */
