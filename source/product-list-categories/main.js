@@ -2,6 +2,12 @@ async function main(args) {
     const { Pool } = require('pg');
     require('dotenv').config();
 
+    return {
+            statusCode: 200,
+            headers: { 'Content-Type': 'application/json' },
+            body: args
+        };
+
     const pool = new Pool({
         host: process.env.PGHOST,
         user: process.env.PGUSER,
@@ -99,8 +105,8 @@ async function main(args) {
 module.exports.main = main;
 
 //input = '{ "main_category": "car & motorbike"}'
-//input = {}
 //input = {"sub_category": "Air Conditioners"}
-/* input = { "main_category": "appliances", "sub_category": "Air Conditioners"}
+//input = { "main_category": "appliances", "sub_category": "Air Conditioners"}
+/* input = {}
 async function test() { console.log(await main(input)) };
 test() */
