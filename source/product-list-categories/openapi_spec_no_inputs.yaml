@@ -71,14 +71,14 @@ paths:
   /categories:
     post:
       summary: List product categories
-      description: Returns a list of main categories if input is empty, or sub-categories
-        if a main_category is provided.
+      description: Returns a list of main categories or sub-categories depending on
+        the input.
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/ProductInput'
+              $ref: '#/components/schemas/CategoryInput'
       responses:
         '200':
           description: A list of categories
@@ -107,4 +107,12 @@ paths:
                   error:
                     type: string
 servers:
-- url: https://search-product-v2.1xx91b9cgn1g.us-south.codeengine.appdomain.cloud/
+- url: https://product-categories.1xx91b9cgn1g.us-south.codeengine.appdomain.cloud/
+components:
+  schemas:
+    CategoryInput:
+      type: object
+      properties:
+        main_category:
+          type: string
+          description: 'Category to which the product belongs. Example: appliances.'
