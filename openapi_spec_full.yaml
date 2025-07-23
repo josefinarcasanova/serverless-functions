@@ -4,7 +4,7 @@ info:
   version: 1.0.2
 openapi: 3.0.3
 paths:
-  /product/search:
+  /search/product:
     post:
       description: Returns a list of products matching the provided search criteria.
       requestBody:
@@ -41,7 +41,7 @@ paths:
                 type: object
           description: Internal server error
       summary: Search for product
-  /product/categories:
+  /search/categories:
     post:
       summary: List product categories and sub-categories. 
       description: Returns a list of main categories or sub-categories depending on the input. If input is empty, a list of main_categories is returned. If a main_category is sent, a list of its corresponding sub-categories are returned. If a sub-category is sent, a list of products belonging to that sub-categories is returned.
@@ -124,6 +124,9 @@ components:
         no_of_ratings:
           type: integer
           description: Amount of people that left ratings.
+        limit:
+          type: number
+          description: maximum amount of products to search for, to reduce query results.
     Product:
       type: object
       properties: *id001
