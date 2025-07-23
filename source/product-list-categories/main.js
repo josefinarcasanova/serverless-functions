@@ -16,13 +16,17 @@ async function main(args) {
     let filters = {};
 
     try {
-        if (args && typeof args === 'object') {
-            filters = args.inputs || args;
-            if (typeof filters === 'string') {
-                filters = JSON.parse(filters);
-            }
-        } else {
-            throw new Error('Invalid input format');
+        let payload = args;
+
+        // If the function is invoked via HTTP (e.g., Postman), the body will be a string
+        if (args.body && typeof args.body === 'string') {
+            payload = JSON.parse(args.body);
+        }
+
+        filters = payload.inputs || payload;
+
+        if (typeof filters === 'string') {
+            filters = JSON.parse(filters);
         }
     } catch (e) {
         return {
@@ -74,11 +78,7 @@ async function main(args) {
 
 module.exports.main = main;
 
-/* input = {
-}
-input = {
-  "main_category": "car & motorbike"
-}
-async function test (){console.log(await main(input))};
-test()
- */
+/* input = '{ "main_category": "car & motorbike"}'
+//input = {}
+async function test() { console.log(await main(input)) };
+test() */
