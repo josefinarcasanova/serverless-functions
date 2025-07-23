@@ -1,4 +1,3 @@
-
 async function main(args) {
     const { Pool } = require('pg');
     require('dotenv').config();
@@ -15,13 +14,15 @@ async function main(args) {
     });
 
     let filters = {};
-        try {
-        if (typeof args.inputs === 'string') {
-            filters = JSON.parse(args.inputs);
-        } else if (typeof args.inputs === 'object') {
-            filters = args.inputs;
+
+    try {
+        if (args && typeof args === 'object') {
+            filters = args.inputs || args;
+            if (typeof filters === 'string') {
+                filters = JSON.parse(filters);
+            }
         } else {
-            filters = args;
+            throw new Error('Invalid input format');
         }
     } catch (e) {
         return {
@@ -73,13 +74,11 @@ async function main(args) {
 
 module.exports.main = main;
 
-/*
-input = {
-  "inputs": "{}"
+/* input = {
 }
 input = {
-  "main_category": "appliances"
+  "main_category": "car & motorbike"
 }
 async function test (){console.log(await main(input))};
 test()
-*/
+ */
