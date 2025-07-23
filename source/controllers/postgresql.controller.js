@@ -24,11 +24,11 @@ function createPool() {
         return pool;
     } catch (err) {
         console.error('Database error:', err);
-        return {
+        /* return {
             statusCode: 500,
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ error: 'Internal server error' }),
-        };
+        }; */
     }
 }
 

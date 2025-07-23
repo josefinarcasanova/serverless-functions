@@ -42,11 +42,12 @@ const search_products = async (req = request, res = response) => {
         //console.log("conditions:", conditions)
 
         if (conditions.length === 0) {
-            return {
+            /* return {
                 statusCode: 400,
                 headers: { 'Content-Type': 'application/json' },
                 body: { error: `Invalid search parameters provided. Provided ${JSON.stringify(filters)}` },
-            };
+            }; */
+            res.status(400).json({ error: `Invalid search parameters provided. Provided ${JSON.stringify(filters)}` });
         }
 
         let query = `
@@ -60,18 +61,22 @@ const search_products = async (req = request, res = response) => {
         }
       
         const result = await pg_pool.getPool().query(query, values);
-        return {
+        /* return {
             statusCode: 200,
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(result.rows),
-        };
+        }; */
+        res.status(200).json(result.rows);
+
     } catch (err) {
         console.error('Database error:', err);
-        return {
+        /* return {
             statusCode: 500,
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ error: 'Internal server error' }),
-        };
+        }; */
+        res.status(500).json({ error: 'Internal server error' });
+        
     }
 }
 
@@ -108,11 +113,12 @@ const search_categories = async (req = request, res = response) => {
             query = `SELECT * FROM ${table_name} WHERE LOWER(sub_category) = LOWER($1) AND sub_category IS NOT NULL`;
             values = [filters.sub_category];
         } else {
-            return {
+            /* return {
                 statusCode: 400,
                 headers: { 'Content-Type': 'application/json' },
                 body: { error: `Invalid input. Filters: ${filters}` }
-            };
+            }; */
+            res.status(400).json({ error: `Invalid input. Filters: ${filters}` });
             
             /* console.log("ultimo else", filters, Object.keys(filters).length)
             query = `SELECT * FROM ${table_name}`;
@@ -140,18 +146,20 @@ const search_categories = async (req = request, res = response) => {
 
         console.log(row_list);
 
-        return {
+        /* return {
             statusCode: 200,
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(row_list),
-        };
+        }; */
+        res.status(200).json(row_list);
     } catch (err) {
         console.error('Database error:', err);
-        return {
+        /* return {
             statusCode: 500,
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ error: 'Internal server error' }),
-        };
+        }; */
+        res.status(500).json({ error: 'Internal server error' });
     }
 }
 
