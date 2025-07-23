@@ -1,0 +1,110 @@
+info:
+  description: Serverless API to search for products using text and numeric filters.
+  title: Product Search API
+  version: 1.0.2
+openapi: 3.0.3
+paths:
+  /search:
+    post:
+      description: Returns a list of products matching the provided search criteria.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              properties:
+                inputs:
+                  description: Stringified JSON object representing the product filter
+                  type: string
+              required:
+              - inputs
+              type: object
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                items:
+                  properties:
+                    actual_price:
+                      type: number
+                    discount_price:
+                      type: number
+                    image:
+                      format: uri
+                      type: string
+                    link:
+                      format: uri
+                      type: string
+                    main_category:
+                      type: string
+                    name:
+                      type: string
+                    no_of_ratings:
+                      type: integer
+                    ratings:
+                      type: number
+                    sub_category:
+                      type: string
+                  type: object
+                type: array
+          description: A list of matching products
+        '400':
+          content:
+            application/json:
+              schema:
+                properties:
+                  error:
+                    type: string
+                type: object
+          description: Invalid input parameters
+        '500':
+          content:
+            application/json:
+              schema:
+                properties:
+                  error:
+                    type: string
+                type: object
+          description: Internal server error
+      summary: Search for product
+  /categories:
+    post:
+      summary: List product categories
+      description: Returns a list of main categories if input is empty, or sub-categories
+        if a main_category is provided.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProductInput'
+      responses:
+        '200':
+          description: A list of categories
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+        '400':
+          description: Invalid input parameters
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+servers:
+- url: https://search-product-v2.1xx91b9cgn1g.us-south.codeengine.appdomain.cloud/
