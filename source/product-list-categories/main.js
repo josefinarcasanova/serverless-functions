@@ -49,6 +49,10 @@ async function main(args) {
             // Return distinct sub-categories for a given main category
             query = `SELECT DISTINCT sub_category FROM ${table_name} WHERE LOWER(main_category) = LOWER($1) AND sub_category IS NOT NULL ORDER BY sub_category`;
             values = [filters.main_category];
+        } else if (filters.sub_category) {
+            // Return distinct sub-categories for a given main category
+            query = `SELECT * FROM ${table_name} WHERE LOWER(sub_category) = LOWER($1) AND sub_category IS NOT NULL`;
+            values = [filters.sub_category];
         } else {
             return {
                 statusCode: 400,
@@ -80,5 +84,6 @@ module.exports.main = main;
 
 /* input = '{ "main_category": "car & motorbike"}'
 //input = {}
+input = {"sub_category": "Air Conditioners"}
 async function test() { console.log(await main(input)) };
 test() */
