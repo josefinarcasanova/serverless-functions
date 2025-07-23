@@ -15,15 +15,13 @@ async function main(args) {
     });
 
     let filters = {};
-    try {
-        if (typeof args === 'string') {
-            filters = JSON.parse(args);
-        } else if (typeof args === 'object') {
-            if ('inputs' in args) {
-                filters = args.inputs;
-            } else {
-                filters = args;
-            }
+        try {
+        if (typeof args.inputs === 'string') {
+            filters = JSON.parse(args.inputs);
+        } else if (typeof args.inputs === 'object') {
+            filters = args.inputs;
+        } else {
+            filters = args;
         }
     } catch (e) {
         return {
@@ -74,3 +72,14 @@ async function main(args) {
 }
 
 module.exports.main = main;
+
+/*
+input = {
+  "inputs": "{}"
+}
+input = {
+  "main_category": "appliances"
+}
+async function test (){console.log(await main(input))};
+test()
+*/
