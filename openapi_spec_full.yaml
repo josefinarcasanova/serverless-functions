@@ -79,7 +79,7 @@ paths:
                   error:
                     type: string
 servers:
-- url: https://product-categories.1xx91b9cgn1g.us-south.codeengine.appdomain.cloud/
+- url: https://product-database.1xx91b9cgn1g.us-south.codeengine.appdomain.cloud
 components:
   schemas:
     CategoryInput:
